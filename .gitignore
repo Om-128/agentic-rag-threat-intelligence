@@ -1,3 +1,7 @@
+# Om Ignore
+local_raw_database/
+rag_env/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
