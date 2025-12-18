@@ -1,2 +1,13 @@
-langchain==1.1.0
-python-dotenv==0.21.0
+langchain
+langchain-community
+langchain-chroma
+langchain-huggingface
+langchain-text-splitters
+chromadb
+sentence-transformers
+pydantic
+jq
+python-dotenv
+config_loader
+tqdm
+dataclasses

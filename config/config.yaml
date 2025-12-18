@@ -1,0 +1,26 @@
+# ---------- Data ----------
+json_files:
+  - "data/local_raw_database/nvd/nvdcve_2.0_2024.json"
+  - "data/local_raw_database/nvd/nvdcve_2.0_2025.json"
+  - "data/local_raw_database/nvd/nvdcve_2.0_recent.json"
+  - "data/local_raw_database/nvd/nvdcve_2.0_modified.json"
+  - "data/local_raw_database/cisa/cisa_known_exploited_vulnerabilities.json"
+  - "data/local_raw_database/mitre/enterprise_attack.json"
+  - "data/local_raw_database/mitre/mobile_attack.json"
+
+# ---------- Vector DB ----------
+vector_db:
+  provider: "qdrant"
+  path: "data/vector_db"
+  collection_name: "security_threats"
+
+# ---------- Embeddings ----------
+embeddings:
+  model_name: "BAAI/bge-base-en-v1.5"
+  dimension: 768
+  device: "cpu"
+
+# ---------- Chunking ----------
+text_splitter:
+  chunk_size: 800
+  chunk_overlap: 100
