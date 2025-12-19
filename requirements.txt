@@ -11,3 +11,5 @@ python-dotenv
 config_loader
 tqdm
 dataclasses
+qdrant-client
+torch

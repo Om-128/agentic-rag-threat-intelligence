@@ -95,6 +95,8 @@ class DataIngestion:
                     clean_text = text.replace("\n", " ").strip()
                     if clean_text:
                         f.write(clean_text + "\n")
+
+            return self.config.output_text_file
         except Exception as e:
             raise CustomException(e, sys)
 
