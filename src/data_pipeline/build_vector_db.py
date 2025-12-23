@@ -68,7 +68,7 @@ class BuildVectorDB:
                 )
             )
 
-            # Embed + upload in batches
+            # Embbed + upload in batches
             batch_size = 128
             point_id = 0
 
@@ -86,7 +86,7 @@ class BuildVectorDB:
                 client.upload_collection(
                     collection_name= self.config.collection_name,
                     vectors = embeddings,
-                    payload=[{"text": c} for c in chunks],
+                    payload=[{"text": c} for c in batch],
                     ids=list(range(point_id, point_id + len(batch)))
                 )
 

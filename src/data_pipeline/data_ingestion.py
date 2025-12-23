@@ -5,7 +5,7 @@ import yaml
 from tqdm import tqdm
 from dataclasses import dataclass
 
-from src.ingestion.parser import parse_cisa, parse_mitre, parse_nvd
+from src.data_pipeline.parser import parse_cisa, parse_mitre, parse_nvd
 from src.custom_exception import CustomException
 
 '''
@@ -81,24 +81,6 @@ class DataIngestion:
 
         except Exception as e:
             CustomException(e, sys)
-
-    # def save_embeddings_to_db():
-    def save_texts_to_txt(self, texts):
-        """
-        Save cleaned texts to UTF-8 txt file
-        """
-        try:
-            os.makedirs(os.path.dirname(self.config.output_text_file), exist_ok=True)
-
-            with open(self.config.output_text_file, "w", encoding="utf-8", errors="ignore") as f:
-                for text in texts:
-                    clean_text = text.replace("\n", " ").strip()
-                    if clean_text:
-                        f.write(clean_text + "\n")
-
-            return self.config.output_text_file
-        except Exception as e:
-            raise CustomException(e, sys)
 
 
 
