@@ -13,3 +13,4 @@ tqdm
 dataclasses
 qdrant-client
 torch
+fastembed

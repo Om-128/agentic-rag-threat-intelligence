@@ -3,7 +3,7 @@ import sys
 
 from src.custom_exception import CustomException
 
-
+''' Save text file to file path '''
 def save_texts_to_txt(texts, file_path):
     """
     Save cleaned texts to UTF-8 txt file
