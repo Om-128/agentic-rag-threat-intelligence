@@ -18,10 +18,10 @@ class IngestionPipeline:
             ingestion_config = DataIngestionConfig()
             ingestion = DataIngestion(ingestion_config)
 
-            all_text = ingestion.convert_json_to_clean_text()
+            cleaned_text = ingestion.convert_json_to_clean_text()
 
             ''' Save cleaned text to file '''
-            clean_file_path = save_texts_to_txt(all_text, ingestion_config.output_text_file)
+            clean_file_path = save_texts_to_txt(cleaned_text, ingestion_config.output_text_file)
             print(f"Cleaned text saved at: {clean_file_path}")
 
             # Build vector DB from cleaned texts

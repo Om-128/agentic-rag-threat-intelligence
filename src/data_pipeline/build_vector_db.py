@@ -7,19 +7,21 @@ import yaml
 from sentence_transformers import SentenceTransformer
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-from qdrant_client import QdrantClient
-from qdrant_client.models import VectorParams, Distance
+import chromadb
 
 from src.custom_exception import CustomException
 
 @dataclass
 class BuildVectorDBConfig:
     config_file_path: str = os.path.join("config", "config.yaml")
-    vector_db_path = os.path.join("data", "qdrant_db")
+    vector_db_path = 'data/chromadb'
     collection_name: str = "cyber_threats"
 
 class BuildVectorDB:
 
+    '''
+        Initialize Yaml, Embedding Model, Text Spliiter, Chromadb
+    '''
     def __init__(self):
         self.config = BuildVectorDBConfig()
 
@@ -40,6 +42,9 @@ class BuildVectorDB:
             chunk_overlap = splitter_cfg["chunk_overlap"]
         )
 
+    '''
+        Split text to chunks
+    '''
     def convert_text_to_chunks(self, text_collection):
         '''
             Split cleaned text into chunks
@@ -49,6 +54,9 @@ class BuildVectorDB:
             chunks.extend(self.text_splitter.split_text(text))
         return chunks
 
+    '''
+        Build vector DB
+    '''
     def build_vector_db(self, cleaned_texts):
         
         try:
@@ -57,42 +65,34 @@ class BuildVectorDB:
             chunks = self.convert_text_to_chunks(cleaned_texts)
             print(f"Total chunks: {len(chunks)}")
 
-            ''' Init Qdrant '''
-            client = QdrantClient(path=self.config.vector_db_path)
-
-            client.recreate_collection(
-                collection_name=self.config.collection_name,
-                vectors_config=VectorParams(
-                    size=self.yaml_config["embeddings"]["dimension"],
-                    distance=Distance.COSINE
-                )
+            # Chroma client + collection
+            client = chromadb.PersistentClient(path=self.config.vector_db_path)
+            collection = client.get_or_create_collection(
+            name=self.config.collection_name
             )
 
-            # Embbed + upload in batches
+            print("Collection List:",client.list_collections())
+
             batch_size = 128
-            point_id = 0
 
             ''' Create Embeddings '''
             print("Creating embeddings...")
 
             for i in tqdm(range(0, len(chunks), batch_size)):
-                batch = chunks[i:i + batch_size]
+                batch_text = chunks[i:i + batch_size]
 
                 embeddings = self.model.encode(
-                    batch,
+                    batch_text,
                     normalize_embeddings=True
+                ).tolist()
+
+                collection.add(
+                    documents=batch_text,
+                    embeddings=embeddings,
+                    ids=[str(i + j) for j in range(len(batch_text))]
                 )
 
-                client.upload_collection(
-                    collection_name= self.config.collection_name,
-                    vectors = embeddings,
-                    payload=[{"text": c} for c in batch],
-                    ids=list(range(point_id, point_id + len(batch)))
-                )
-
-                point_id += len(batch)
-
-            print("Vector db built successfully")
+            print("Chroma vector DB built successfully")
 
         except Exception as e:
             raise CustomException(e, sys)

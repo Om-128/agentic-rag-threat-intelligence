@@ -16,30 +16,9 @@ class DataIngestionConfig:
     config_file_path = os.path.join('config', 'config.yaml')
     output_text_file: str = "data/clean_security_texts.txt"
 
-
-def normalize_text(text: str) -> str:
-    """
-    Remove redundant boilerplate phrases and normalize whitespace
-    """
-    boilerplate_phrases = [
-        "The exploit has been disclosed to the public and may be used.",
-        "The exploit has been disclosed to the public and may be used",
-        "It is possible to launch the attack remotely.",
-        "It is possible to initiate the attack remotely.",
-        "The attack can be launched remotely.",
-        "The attack may be initiated remotely.",
-        "The attack can be initiated remotely.",
-    ]
-
-    for phrase in boilerplate_phrases:
-        text = text.replace(phrase, "")
-
-    return " ".join(text.split())
-
-
 '''
     This class is responsible for
-    Loading json files -> Convert them into clean text
+    Loading json files -> Convert them into text file
 '''
 class DataIngestion:
 
@@ -49,7 +28,7 @@ class DataIngestion:
     def convert_json_to_clean_text(self):
         """
         Load JSON files from config.yaml
-        Parse and clean text
+        Parse text
         Return list[str]
         """
         try:
@@ -57,7 +36,7 @@ class DataIngestion:
             with open(self.config.config_file_path, "r") as f:
                 config = yaml.safe_load(f)
 
-            all_texts = []
+            cleaned_text = []
 
             for path in tqdm(config["json_files"], desc="Ingesting JSON files"):
                 if "nvd" in path:
@@ -75,13 +54,33 @@ class DataIngestion:
                 for text in texts:
                     cleaned = normalize_text(text)
                     if cleaned:
-                        all_texts.append(cleaned)
+                        cleaned_text.append(cleaned)
+            
+            
+            print("Cleaned text returned...")
 
-            return all_texts
+            return cleaned_text
 
         except Exception as e:
             CustomException(e, sys)
 
 
+'''
+    Remove redundant boilerplate phrases and normalize whitespace
+'''
+def normalize_text(text: str) -> str:
 
+    boilerplate_phrases = [
+        "The exploit has been disclosed to the public and may be used.",
+        "The exploit has been disclosed to the public and may be used",
+        "It is possible to launch the attack remotely.",
+        "It is possible to initiate the attack remotely.",
+        "The attack can be launched remotely.",
+        "The attack may be initiated remotely.",
+        "The attack can be initiated remotely.",
+    ]
 
+    for phrase in boilerplate_phrases:
+        text = text.replace(phrase, "")
+
+    return " ".join(text.split())

@@ -2,6 +2,8 @@
 local_raw_database/
 rag_env/
 qdrant_db/
+chromadb/
+notebooks/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
