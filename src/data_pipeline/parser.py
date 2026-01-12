@@ -1,5 +1,7 @@
 import json
-
+'''
+    This scripts provides helper functions to format response of different vulnerability dataset
+'''
 '''  -------- NVD --------  '''
 def parse_nvd(file_path : str):
     texts = []
